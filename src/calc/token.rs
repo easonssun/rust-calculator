@@ -18,7 +18,7 @@ impl Token {
         use OperatorPrecedence::*;
         use Token::*;
         match self {
-            Add | Subtract => AddOrSubstract,
+            Add | Subtract => AddOrSubtract,
             Multiply | Divide => MultiplyOrDivide,
             Caret => Power,
             _ => Default,
@@ -46,7 +46,7 @@ impl Display for Token {
 #[derive(Debug, PartialEq, PartialOrd, Copy, Clone)]
 pub enum OperatorPrecedence {
     Default,
-    AddOrSubstract,
+    AddOrSubtract,
     MultiplyOrDivide,
     Power,
     Negative,
