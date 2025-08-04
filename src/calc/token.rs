@@ -1,16 +1,18 @@
 use std::fmt::Display;
 
+use rust_decimal::Decimal;
+
 #[derive(Debug, PartialEq, Copy, Clone)]
 pub enum Token {
-    Add,         // +
-    Subtract,    // -
-    Multiply,    // *
-    Divide,      // /
-    Caret,       // ^
-    LeftParen,   // (
-    RightParen,  // )
-    Number(f64), // number
-    EOF,         // success end
+    Add,             // +
+    Subtract,        // -
+    Multiply,        // *
+    Divide,          // /
+    Caret,           // ^
+    LeftParen,       // (
+    RightParen,      // )
+    Number(Decimal), // number
+    EOF,             // success end
 }
 
 impl Token {

@@ -64,3 +64,25 @@ impl<'a> Iterator for Tokenizer<'a> {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use rust_decimal::dec;
+
+    use super::*;
+    #[test]
+    fn test_tokenizer() {
+        let mut tokenizer = Tokenizer::new("1+    2 * 3");
+        assert_eq!(
+            tokenizer.collect::<Vec<Token>>(),
+            vec![
+                Token::Number(dec!(1)),
+                Token::Add,
+                Token::Number(dec!(2)),
+                Token::Multiply,
+                Token::Number(dec!(3)),
+                Token::EOF
+            ]
+        );
+    }
+}
