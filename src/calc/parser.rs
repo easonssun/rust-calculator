@@ -23,7 +23,7 @@ impl<'a> Parser<'a> {
     }
 
     pub fn parse(&mut self) -> CalcResult<Node> {
-        todo!()
+        self.parse_expression(OperatorPrecedence::Default)
     }
 }
 
@@ -37,8 +37,43 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_expression(&mut self, precedence: OperatorPrecedence) -> CalcResult<Node> {
-        let expr = self.parse_number_or_expression()?;
-        todo!()
+        let mut expr = self.parse_number_or_expression()?;
+
+        while precedence < self.current_token.get_precedence() {
+            expr = self.parse_binary_expression(expr)?;
+        }
+        Ok(expr)
+    }
+
+    fn parse_binary_expression(&mut self, left_expr: Node) -> CalcResult<Node> {
+        match self.current_token {
+            Token::Add => {
+                self.next_token()?;
+                let right_expr = self.parse_expression(OperatorPrecedence::AddOrSubtract)?;
+                Ok(Node::Add(Box::new(left_expr), Box::new(right_expr)))
+            }
+            Token::Subtract => {
+                self.next_token()?;
+                let right_expr = self.parse_expression(OperatorPrecedence::AddOrSubtract)?;
+                Ok(Node::Subtract(Box::new(left_expr), Box::new(right_expr)))
+            }
+            Token::Multiply => {
+                self.next_token()?;
+                let right_expr = self.parse_expression(OperatorPrecedence::MultiplyOrDivide)?;
+                Ok(Node::Multiply(Box::new(left_expr), Box::new(right_expr)))
+            }
+            Token::Divide => {
+                self.next_token()?;
+                let right_expr = self.parse_expression(OperatorPrecedence::MultiplyOrDivide)?;
+                Ok(Node::Divide(Box::new(left_expr), Box::new(right_expr)))
+            }
+            Token::Caret => {
+                self.next_token()?;
+                let right_expr = self.parse_expression(OperatorPrecedence::Power)?;
+                Ok(Node::Power(Box::new(left_expr), Box::new(right_expr)))
+            }
+            _ => unreachable!("Invalid operator")
+        }
     }
 
     fn parse_number_or_expression(&mut self) -> CalcResult<Node> {
