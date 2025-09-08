@@ -72,7 +72,7 @@ impl<'a> Parser<'a> {
                 let right_expr = self.parse_expression(OperatorPrecedence::Power)?;
                 Ok(Node::Power(Box::new(left_expr), Box::new(right_expr)))
             }
-            _ => unreachable!("Invalid operator")
+            _ => unreachable!("Invalid operator"),
         }
     }
 
@@ -112,5 +112,27 @@ impl<'a> Parser<'a> {
                 )));
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::calc::parser;
+    use rust_decimal::dec;
+
+    use super::*;
+    #[test]
+    fn test_parse_or_multiple() {
+        let mut parser = parser::Parser::new("1+   2  * 3").unwrap();
+        assert_eq!(
+            parser.parse(),
+            Ok(Node::Add(
+                Box::new(Node::Number(dec!(1))),
+                Box::new(Node::Multiply(
+                    Box::new(Node::Number(dec!(2))),
+                    Box::new(Node::Number(dec!(3)))
+                ))
+            ))
+        )
     }
 }
